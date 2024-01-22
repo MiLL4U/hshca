@@ -4,7 +4,7 @@ from hshca import HierarchicalClusterAnalysis
 from hshca.linkmethod import Centroid
 from hshca.metric import Euclidean
 
-DATA_PATH = "./rand.npy"
+DATA_PATH = "./test/test_rand.npy"
 METHOD = Centroid
 METRIC = Euclidean
 
