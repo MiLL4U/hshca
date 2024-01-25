@@ -35,6 +35,14 @@ class HierarchicalClusterAnalysis:
     def distance_matrix(self) -> ndarray:
         return self.__dist_matrix
 
+    @property
+    def linkage_history(self) -> ndarray:
+        return self.__linkage_hist
+
+    @property
+    def linkage_distances(self) -> ndarray:
+        return self.__linkage_dist
+
     def __init_internal_variables(self) -> None:
         # self.__repr_points = np.copy(self.__data)
         # self.__is_linkaged = np.zeros(self.data_num, dtype=bool)
@@ -46,8 +54,7 @@ class HierarchicalClusterAnalysis:
             (self.linkage_num, 2), -1,  # REVIEW: is -1 appropriate for empty?
             dtype=int)
         self.__linkage_dist = np.full(
-            self.linkage_num, np.inf,  # REVIEW: np.empty?
-            dtype=self.__compute_dtype)
+            self.linkage_num, np.inf, dtype=self.__compute_dtype)
 
     def compute(self) -> None:
         self.__init_dist_matrix()
@@ -56,7 +63,6 @@ class HierarchicalClusterAnalysis:
             pair_idx = self.__search_dist_argmin()
             self.__make_linkage(pair_idx)
             self.__update_dist_matrix(pair_idx)
-            print(self.__dist_matrix)
 
     def __search_dist_argmin(self) -> Tuple[int, int]:
         # HACK: optimize search algorhythm
@@ -84,17 +90,23 @@ class HierarchicalClusterAnalysis:
         self.__link_count += 1
 
     def __update_dist_matrix(self, linked_pair: Tuple[int, int]) -> None:
+        # get distances to new cluster
+        new_cluster = self.__clusters[linked_pair[0]]
+        if new_cluster is None:
+            raise ValueError("new cluster not exist")
+        new_dist = self.__method.cluster_distance_multi(
+            new_cluster, self.__clusters)
+
+        # update distance matrix
+        self.__dist_matrix[:linked_pair[0], linked_pair[0]] \
+            = new_dist[:linked_pair[0]]  # vertical
+        self.__dist_matrix[linked_pair[0], linked_pair[0]:] \
+            = new_dist[linked_pair[0]:]  # horizontal
+
         # fill row and column of linked node with inf
         self.__dist_matrix[linked_pair[1]] = np.inf
         self.__dist_matrix[:, linked_pair[1]] = np.inf
-
-        # debug
-        for row in self.__dist_matrix:
-            print(row.round(1))
-
-        # update distance matrix
-        # TODO: implement here
-        return
+        self.__dist_matrix[linked_pair[0], linked_pair[0]] = np.inf
 
     def __init_dist_matrix(self) -> None:
         self.__dist_matrix = self.__metric.distance_matrix(self.__data)
