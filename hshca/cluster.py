@@ -9,6 +9,8 @@ class Cluster:
     def __init__(self, all_vectors: ndarray, node_idxs: List[int]) -> None:
         self.__all_vectors = all_vectors
         self.__node_idxs = node_idxs
+        # self.__repr_point = ...
+        # TODO: hold representing point to improve performance?
 
     @property
     def node_idxs(self) -> List[int]:
