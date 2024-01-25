@@ -35,6 +35,14 @@ class HierarchicalClusterAnalysis:
     def distance_matrix(self) -> ndarray:
         return self.__dist_matrix
 
+    @property
+    def linkage_history(self) -> ndarray:
+        return self.__linkage_hist
+
+    @property
+    def linkage_distances(self) -> ndarray:
+        return self.__linkage_dist
+
     def __init_internal_variables(self) -> None:
         # self.__repr_points = np.copy(self.__data)
         # self.__is_linkaged = np.zeros(self.data_num, dtype=bool)
