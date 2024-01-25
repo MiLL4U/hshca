@@ -24,3 +24,6 @@ dist = hca.linkage_distances
 hist = hca.linkage_history
 for d, h in zip(dist, hist):
     print(d, h)
+
+res = hca.get_fcluster(5)
+print(res)

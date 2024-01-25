@@ -64,6 +64,24 @@ class HierarchicalClusterAnalysis:
             self.__make_linkage(pair_idx)
             self.__update_dist_matrix(pair_idx)
 
+    def get_fcluster(self, cluster_num: int) -> ndarray:
+        linkage_count = self.data_num - cluster_num
+        linkages = self.linkage_history[:linkage_count]
+
+        clusters = cast(List[Union[List[int], None]], [[i]
+                        for i in range(self.data_num)])
+        for base, addition in linkages:
+            clusters[base].extend(clusters[addition])
+            clusters[addition] = None
+        flatten = [cluster for cluster in clusters if cluster]
+
+        res = np.empty(self.data_num, dtype=np.int32)
+        for cls_idx, cluster in enumerate(flatten):
+            for data_idx in cluster:
+                res[data_idx] = cls_idx
+
+        return res
+
     def __search_dist_argmin(self) -> Tuple[int, int]:
         # HACK: optimize search algorhythm
         res = np.unravel_index(
