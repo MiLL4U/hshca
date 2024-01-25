@@ -32,10 +32,6 @@ class HierarchicalClusterAnalysis:
         return self.data_num - 1
 
     @property
-    def distance_matrix(self) -> ndarray:
-        return self.__dist_matrix
-
-    @property
     def linkage_history(self) -> ndarray:
         return self.__linkage_hist
 

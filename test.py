@@ -19,7 +19,6 @@ print(data_2d)
 hca = HierarchicalClusterAnalysis(data_2d, METHOD, METRIC)
 hca.compute()
 
-print(hca.distance_matrix)
 dist = hca.linkage_distances
 hist = hca.linkage_history
 for d, h in zip(dist, hist):
