@@ -9,7 +9,7 @@ from .metric import HCAMetric
 
 
 class HierarchicalClusterAnalysis:
-    def __init__(self, data: ndarray,
+    def __init__(self, data: ndarray,  # must be 2-dimensional array
                  method: Type[LinkageMethod],
                  metric: Type[HCAMetric]) -> None:
         self.__data = data
@@ -123,3 +123,10 @@ class HierarchicalClusterAnalysis:
     def __init_dist_matrix(self) -> None:
         self.__dist_matrix = self.__metric.distance_matrix(self.__data)
         self.__dist_matrix[np.tril_indices(self.data_num)] = np.inf
+
+
+class MultiDimensionalHCA(HierarchicalClusterAnalysis):
+    def __init__(self, data: ndarray,
+                 method: type[LinkageMethod],
+                 metric: type[HCAMetric]) -> None:
+        super().__init__(data, method, metric)
