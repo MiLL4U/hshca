@@ -24,9 +24,6 @@ class Cluster:
     def vectors(self) -> ndarray:
         return self.__all_vectors[self.__node_idxs]
 
-    def add_nodes(self, node_idxs: List[int]) -> None:
-        self.__node_idxs.extend(node_idxs)  # REVIEW: need to validate?
-
     def merge(self, other: Cluster) -> None:
         # TODO: check if using same data in two clusters
         self.__node_idxs.extend(other.node_idxs)
