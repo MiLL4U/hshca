@@ -11,11 +11,6 @@ class HCAMetric(ABC):
     def name(self) -> str:
         raise NotImplementedError
 
-    # @abstractmethod
-    # def vector_distance(self, vector_1: np.ndarray, vector_2: np.ndarray
-    #                     ) -> float:
-    #     raise NotImplementedError
-
     @abstractmethod
     def distance_matrix(self, vectors_1: np.ndarray,
                         vectors_2: Optional[np.ndarray] = None
@@ -32,10 +27,6 @@ class Euclidean(HCAMetric):
     @property
     def name(self) -> str:
         return self.NAME
-
-    # def vector_distance(self, vector_1: np.ndarray,
-    #                     vector_2: np.ndarray) -> float:
-    #     return distance.euclidean(vector_1, vector_2)
 
     def distance_matrix(self, vectors_1: np.ndarray,
                         vectors_2: Optional[np.ndarray] = None) -> np.ndarray:
