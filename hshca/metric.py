@@ -39,6 +39,6 @@ class Euclidean(HCAMetric):
 
     def distance_matrix(self, vectors_1: np.ndarray,
                         vectors_2: Optional[np.ndarray] = None) -> np.ndarray:
-        if not vectors_2:
+        if vectors_2 is None:
             vectors_2 = vectors_1
         return distance.cdist(vectors_1, vectors_2, metric=self.NAME)
