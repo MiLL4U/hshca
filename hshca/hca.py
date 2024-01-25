@@ -32,10 +32,6 @@ class HierarchicalClusterAnalysis:
         return self.data_num - 1
 
     @property
-    def distance_matrix(self) -> ndarray:
-        return self.__dist_matrix
-
-    @property
     def linkage_history(self) -> ndarray:
         return self.__linkage_hist
 
@@ -44,8 +40,6 @@ class HierarchicalClusterAnalysis:
         return self.__linkage_dist
 
     def __init_internal_variables(self) -> None:
-        # self.__repr_points = np.copy(self.__data)
-        # self.__is_linkaged = np.zeros(self.data_num, dtype=bool)
         self.__clusters: List[Union[Cluster, None]] = [
             Cluster(self.data, [i]) for i in range(self.data_num)]
         self.__link_count = 0

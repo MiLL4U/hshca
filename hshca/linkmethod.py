@@ -12,11 +12,6 @@ class LinkageMethod(ABC):
     def __init__(self, metric: HCAMetric) -> None:
         raise NotImplementedError
 
-    # @abstractmethod
-    # def cluster_distance(self, cluster_1: Cluster,
-    #                      cluster_2: Cluster) -> float:
-    #     raise NotImplementedError
-
     @abstractmethod
     def cluster_distance_multi(self, single_cluster: Cluster,
                                multi_clusters: List[Union[Cluster, None]]
@@ -37,12 +32,6 @@ class LinkageMethod(ABC):
 class Centroid(LinkageMethod):
     def __init__(self, metric: HCAMetric) -> None:
         self.__metric = metric
-
-    # def cluster_distance(self, cluster_1: Cluster, cluster_2: Cluster
-    #                      ) -> float:
-    #     centroid_1 = np.average(cluster_1.vectors, axis=1)
-    #     centroid_2 = np.average(cluster_2.vectors, axis=1)
-    #     return self.__metric.vector_distance(centroid_1, centroid_2)
 
     def cluster_distance_multi(self, single_cluster: Cluster,
                                multi_clusters: List[Union[Cluster, None]]
