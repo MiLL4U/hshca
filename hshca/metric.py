@@ -2,7 +2,14 @@ from abc import ABC, abstractmethod
 
 import numpy as np
 from scipy.spatial import distance
-from typing import Optional
+from typing import Optional, Literal
+
+SciPySupportedMetricsName = Literal[
+    'braycurtis', 'canberra', 'chebyshev', 'cityblock', 'correlation',
+    'cosine', 'dice', 'euclidean', 'hamming', 'jaccard', 'jensenshannon',
+    'kulczynski1', 'mahalanobis', 'matching', 'minkowski',
+    'rogerstanimoto', 'russellrao', 'seuclidean', 'sokalmichener',
+    'sokalsneath', 'sqeuclidean', 'yule']
 
 
 class HCAMetric(ABC):
@@ -23,22 +30,21 @@ class HCAMetric(ABC):
         raise NotImplementedError
 
 
-class Euclidean(HCAMetric):
-    NAME = "euclidean"
-
-    def __init__(self) -> None:
-        super().__init__()
+class SciPySupportedMetric(HCAMetric):
+    def __init__(self, metric_name: SciPySupportedMetricsName) -> None:
+        self.__name = metric_name
 
     @property
     def name(self) -> str:
-        return self.NAME
-
-    # def vector_distance(self, vector_1: np.ndarray,
-    #                     vector_2: np.ndarray) -> float:
-    #     return distance.euclidean(vector_1, vector_2)
+        return self.__name
 
     def distance_matrix(self, vectors_1: np.ndarray,
                         vectors_2: Optional[np.ndarray] = None) -> np.ndarray:
         if vectors_2 is None:
             vectors_2 = vectors_1
-        return distance.cdist(vectors_1, vectors_2, metric=self.NAME)
+        return distance.cdist(vectors_1, vectors_2, metric=self.name)
+
+
+class Euclidean(SciPySupportedMetric):
+    def __init__(self) -> None:
+        super().__init__('euclidean')
