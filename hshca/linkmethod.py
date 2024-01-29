@@ -79,13 +79,18 @@ class Centroid(LinkageMethod):
     def cluster_distance_multi(self, single_cluster: Cluster,
                                multi_clusters: List[Union[Cluster, None]]
                                ) -> np.ndarray:
-        centroid_single = self.centroid(single_cluster)
-        centroids = np.array([self.centroid(cluster)
-                              for cluster in multi_clusters if cluster])
-
-        distances = self.__metric.distance_matrix(centroid_single, centroids)
-        return self.full_distance_vector(multi_clusters, distances)
+        centroid_distances = self.centroid_distances(
+            single_cluster, multi_clusters)
+        return self.full_distance_vector(multi_clusters, centroid_distances)
         # NOTE: distance to single_cluster itself is zero
+
+    def centroid_distances(self, single_cluster: Cluster,
+                           multi_clusters: List[Union[Cluster, None]]
+                           ) -> np.ndarray:
+        centroid_single = self.centroid(single_cluster)
+        centroids_multi = np.array([self.centroid(cluster)
+                                    for cluster in multi_clusters if cluster])
+        return self.__metric.distance_matrix(centroid_single, centroids_multi)
 
 
 # class Ward(LinkageMethod):
