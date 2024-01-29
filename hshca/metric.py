@@ -48,3 +48,8 @@ class SciPySupportedMetric(HCAMetric):
 class Euclidean(SciPySupportedMetric):
     def __init__(self) -> None:
         super().__init__('euclidean')
+
+
+class CityBlock(SciPySupportedMetric):
+    def __init__(self) -> None:
+        super().__init__('cityblock')

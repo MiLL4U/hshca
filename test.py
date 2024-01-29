@@ -2,11 +2,11 @@ import numpy as np
 
 from hshca import HierarchicalClusterAnalysis
 from hshca.linkmethod import Centroid
-from hshca.metric import Euclidean
+from hshca.metric import CityBlock
 
 DATA_PATH = "./test/test_rand.npy"
 METHOD = Centroid
-METRIC = Euclidean
+METRIC = CityBlock
 
 data = np.array(np.load(DATA_PATH))  # 3D array (x, y, r)
 print(data)
@@ -24,5 +24,5 @@ hist = hca.linkage_history
 for d, h in zip(dist, hist):
     print(d, h)
 
-res = hca.get_fcluster(5)
-print(res)
+res = hca.get_fcluster(3)
+print(res + 1)
