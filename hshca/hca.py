@@ -55,10 +55,8 @@ class HierarchicalClusterAnalysis:
         self.__clusters: List[Union[Cluster, None]] = [
             Cluster(self.data, [i]) for i in range(self.data_num)]
         self.__link_count = 0
-        self.__cluster_idxs = np.arange(self.data_num)
         self.__linkage_hist = np.full(
-            (self.linkage_num, 2), -1,  # REVIEW: is -1 appropriate for empty?
-            dtype=int)
+            (self.linkage_num, 2), -1, dtype=int)   # -1: empty
         self.__linkage_dist = np.full(
             self.linkage_num, np.inf, dtype=self.__compute_dtype)
 
@@ -107,9 +105,6 @@ class HierarchicalClusterAnalysis:
         if cluster_1 and cluster_2:
             cluster_1.merge(cluster_2)
         self.__clusters[pair_idx[1]] = None
-
-        # update cluster index
-        self.__cluster_idxs[pair_idx[1]] = pair_idx[0]
 
         # increment linkage count
         self.__link_count += 1
