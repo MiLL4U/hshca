@@ -38,7 +38,8 @@ class LinkageMethod(ABC):
         raise NotImplementedError
 
     def full_distance_vector(self, clusters: List[Union[Cluster, None]],
-                             distances: np.ndarray) -> np.ndarray:
+                             distances: Union[np.ndarray, List[float]]
+                             ) -> np.ndarray:
         """Generate full-size distance vector (distances between a cluster and
         None is filled with np.inf)
 
@@ -97,6 +98,10 @@ class Ward(LinkageMethod):
         If this class is used with a metric other than Euclidean distance,
         the centroid is defined by the Euclidean distance, but the variance is
         calculated with the specified metric.
+
+        NOTE: This class was implemented based on the following web page,
+        but the algorithm may be incorrect.
+        https://ja.wikipedia.org/wiki/%E3%82%A6%E3%82%A9%E3%83%BC%E3%83%89%E6%B3%95
         """
         self.__metric = metric
 
@@ -104,39 +109,20 @@ class Ward(LinkageMethod):
                                multi_clusters: List[Cluster | None]
                                ) -> np.ndarray:
         var_single = self.__clutster_variance(single_cluster)
-        distances = []
-        for cluster in multi_clusters:
-            if cluster:
-                distances.append(self.__ward_distance(single_cluster, cluster))
-            else:
-                distances.append(np.inf)
-        return np.array(distances)
+        var_multi = [self.__clutster_variance(cluster)
+                     for cluster in multi_clusters if cluster]
 
-    def __ward_distance(self, cluster1: Cluster, cluster2: Cluster) -> float:
-        """
-        Calculate the Ward distance between two clusters.
-        """
-        merged_data = np.vstack(
-            [cluster1.member_vectors, cluster2.member_vectors])
-        # Node indices will be recalculated in the merge step
-        merged_cluster = Cluster(cluster1.all_vectors, [])
-
-        ssd_merged = self.__sum_of_squares_deviation(merged_data)
-        ssd_cluster1 = self.__sum_of_squares_deviation(cluster1.member_vectors)
-        ssd_cluster2 = self.__sum_of_squares_deviation(cluster2.member_vectors)
-
-        increase_in_ssd = ssd_merged - (ssd_cluster1 + ssd_cluster2)
-        return np.sqrt(increase_in_ssd)
+        merged_clusters = [single_cluster.merged(cluster)
+                           for cluster in multi_clusters if cluster]
+        var_merged = [self.__clutster_variance(cluster)
+                      for cluster in merged_clusters]
+        distances = [var_mer - var_single - var_mul
+                     for var_mer, var_mul in zip(var_merged, var_multi)]
+        return self.full_distance_vector(multi_clusters, distances)
 
     def __clutster_variance(self, cluster: Cluster) -> float:
-        mean = np.mean(cluster.member_vectors, axis=0)
-        deaviations = cluster.member_vectors - mean
-        squared = np.square(deaviations)
-        return np.sum(np.square(deaviations))
-
-    def __sum_of_squares_deviation(self, vectors: np.ndarray) -> float:
-        """
-        Calculate the sum of squares deviation of vectors from their mean.
-        """
-        mean_vector = np.mean(vectors, axis=0)
-        return np.sum(np.square(vectors - mean_vector))
+        # TODO: use cache (bind to Cluster?) to improve performance
+        centroid = np.mean(cluster.member_vectors, axis=0)
+        distances = self.__metric.distance_matrix(
+            [centroid], cluster.member_vectors)  # TODO: support 1-dim array
+        return np.sum(np.square(distances))
