@@ -115,7 +115,7 @@ class HierarchicalClusterAnalysis:
         if new_cluster is None:
             raise ValueError("new cluster not exist")
         new_dist = self.__method.cluster_distance_multi(
-            new_cluster, self.__clusters)
+            new_cluster, self.__clusters, self.__dist_matrix, linked_pair)
 
         # update distance matrix
         self.__dist_matrix[:linked_pair[0], linked_pair[0]] \

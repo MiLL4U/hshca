@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List, Union
+from typing import List, Tuple, Union
 
 import numpy as np
 
@@ -23,8 +23,9 @@ class LinkageMethod(ABC):
 
     @abstractmethod
     def cluster_distance_multi(self, single_cluster: Cluster,
-                               multi_clusters: List[Union[Cluster, None]]
-                               ) -> np.ndarray:
+                               multi_clusters: List[Union[Cluster, None]],
+                               dist_matrix: np.ndarray,
+                               linked_pair: Tuple[int, int]) -> np.ndarray:
         """Returns the distances between a single cluster and multiple clusters.
         NOTE: For distance between a cluster and None, np.inf is returned.
 
@@ -74,8 +75,9 @@ class Centroid(LinkageMethod):
         self.__metric = metric
 
     def cluster_distance_multi(self, single_cluster: Cluster,
-                               multi_clusters: List[Union[Cluster, None]]
-                               ) -> np.ndarray:
+                               multi_clusters: List[Union[Cluster, None]],
+                               dist_matrix: np.ndarray,
+                               linked_pair: Tuple[int, int]) -> np.ndarray:
         centroid_distances = self.centroid_distances(
             single_cluster, multi_clusters)
         return self.full_distance_vector(multi_clusters, centroid_distances)
@@ -112,7 +114,8 @@ class Ward(Centroid):
         super().__init__(metric)
 
     def cluster_distance_multi(self, single_cluster: Cluster,
-                               multi_clusters: List[Cluster | None]
-                               ) -> np.ndarray:
+                               multi_clusters: List[Union[Cluster, None]],
+                               dist_matrix: np.ndarray,
+                               linked_pair: Tuple[int, int]) -> np.ndarray:
         ward_distances: List[float] = []
         return self.full_distance_vector(multi_clusters, ward_distances)
