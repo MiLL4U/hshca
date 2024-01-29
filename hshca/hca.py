@@ -1,7 +1,8 @@
-from typing import List, Tuple, Type, Union, cast
+from typing import List, Optional, Tuple, Type, Union, cast
 
 import numpy as np
 from numpy import ndarray
+from tqdm import tqdm
 
 from .cluster import Cluster
 from .linkmethod import LinkageMethod
@@ -9,13 +10,18 @@ from .metric import HCAMetric
 
 
 class HierarchicalClusterAnalysis:
+    DEFAULT_SHOW_PROGRESS = False
+
     def __init__(self, data: ndarray,
                  method: Type[LinkageMethod],
-                 metric: Type[HCAMetric]) -> None:
+                 metric: Type[HCAMetric],
+                 show_progress: Optional[bool] = None) -> None:
         self.__data = data
         self.__compute_dtype = data.dtype
         self.__metric = metric()
         self.__method = method(self.__metric)
+        self.__show_progress = show_progress if show_progress \
+            else self.DEFAULT_SHOW_PROGRESS
 
         self.__init_internal_variables()
 
@@ -53,7 +59,7 @@ class HierarchicalClusterAnalysis:
     def compute(self) -> None:
         self.__init_dist_matrix()
 
-        for _ in range(self.linkage_num):
+        for _ in tqdm(range(self.linkage_num)):
             pair_idx = self.__search_dist_argmin()
             self.__make_linkage(pair_idx)
             self.__update_dist_matrix(pair_idx)

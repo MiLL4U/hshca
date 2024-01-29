@@ -16,7 +16,7 @@ vec_num = data.shape[0] * data.shape[1]
 data_2d = data.reshape(vec_num, data.shape[2])  # (i, r)
 print(data_2d)
 
-hca = HierarchicalClusterAnalysis(data_2d, METHOD, METRIC)
+hca = HierarchicalClusterAnalysis(data_2d, METHOD, METRIC, True)
 hca.compute()
 
 dist = hca.linkage_distances
