@@ -1,3 +1,3 @@
-from .hca import HierarchicalClusterAnalysis
+from .hca import HierarchicalClusterAnalysis, MultiDimensionalHCA
 
-__all__ = ['HierarchicalClusterAnalysis']
+__all__ = ['HierarchicalClusterAnalysis', 'MultiDimensionalHCA']
