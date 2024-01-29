@@ -42,7 +42,17 @@ class SciPySupportedMetric(HCAMetric):
                         vectors_2: Optional[np.ndarray] = None) -> np.ndarray:
         if vectors_2 is None:
             vectors_2 = vectors_1
+        vectors_1 = self.cast_to_2d_array(vectors_1)
+        vectors_2 = self.cast_to_2d_array(vectors_2)
         return distance.cdist(vectors_1, vectors_2, metric=self.name)
+
+    def cast_to_2d_array(self, vectors: np.ndarray) -> np.ndarray:
+        if vectors.ndim == 2:
+            return vectors
+        elif vectors.ndim == 1:
+            return np.array([vectors])
+        else:
+            raise TypeError(f"invalid dimension ({vectors.ndim})")
 
 
 class Euclidean(SciPySupportedMetric):

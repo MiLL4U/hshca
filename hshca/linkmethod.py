@@ -124,5 +124,5 @@ class Ward(LinkageMethod):
         # TODO: use cache (bind to Cluster?) to improve performance
         centroid = np.mean(cluster.member_vectors, axis=0)
         distances = self.__metric.distance_matrix(
-            [centroid], cluster.member_vectors)  # TODO: support 1-dim array
+            centroid, cluster.member_vectors)  # TODO: support 1-dim array
         return np.sum(np.square(distances))
