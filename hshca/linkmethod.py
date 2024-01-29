@@ -151,9 +151,21 @@ class Ward(Centroid):
         NOTE: This class was implemented based on the following web page.
         https://www.business-research-lab.com/220512-3/
         """
-        self.__metric = metric
+        super().__init__(metric)
 
     def cluster_distance_multi(self, single_cluster: Cluster,
                                multi_clusters: List[Cluster | None]
                                ) -> np.ndarray:
-        return np.array([])
+        centroid_distances = self.centroid_distances(
+            single_cluster, multi_clusters)
+        factors = [self.ward_distance_factor(single_cluster, cluster)
+                   for cluster in multi_clusters if cluster]
+        ward_distances = [distance * factor for distance, factor
+                          in zip(centroid_distances, factors)]
+        return self.full_distance_vector(multi_clusters, ward_distances)
+
+    def ward_distance_factor(self, cluster_1: Cluster,
+                             cluster_2: Cluster) -> float:
+        size_1 = cluster_1.size
+        size_2 = cluster_2.size
+        return np.sqrt((size_1 * size_2 * 2) / (size_1 + size_2))
