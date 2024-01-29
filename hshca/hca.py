@@ -20,8 +20,8 @@ class HierarchicalClusterAnalysis:
         self.__compute_dtype = data.dtype
         self.__metric = metric()
         self.__method = method(self.__metric)
-        self.__show_progress = show_progress if show_progress \
-            else self.DEFAULT_SHOW_PROGRESS
+        self.__show_progress = self.DEFAULT_SHOW_PROGRESS if \
+            show_progress is None else show_progress
 
         self.__init_internal_variables()
 
@@ -55,17 +55,17 @@ class HierarchicalClusterAnalysis:
         self.__clusters: List[Union[Cluster, None]] = [
             Cluster(self.data, [i]) for i in range(self.data_num)]
         self.__link_count = 0
-        self.__cluster_idxs = np.arange(self.data_num)
         self.__linkage_hist = np.full(
-            (self.linkage_num, 2), -1,  # REVIEW: is -1 appropriate for empty?
-            dtype=int)
+            (self.linkage_num, 2), -1, dtype=int)   # -1: empty
         self.__linkage_dist = np.full(
             self.linkage_num, np.inf, dtype=self.__compute_dtype)
 
     def compute(self) -> None:
         self.__init_dist_matrix()
 
-        for _ in tqdm(range(self.linkage_num)):
+        itr = tqdm(range(self.linkage_num)) if self.__show_progress \
+            else range(self.linkage_num)
+        for _ in itr:
             pair_idx = self.__search_dist_argmin()
             self.__make_linkage(pair_idx)
             self.__update_dist_matrix(pair_idx)
@@ -108,9 +108,6 @@ class HierarchicalClusterAnalysis:
             cluster_1.merge(cluster_2)
         self.__clusters[pair_idx[1]] = None
 
-        # update cluster index
-        self.__cluster_idxs[pair_idx[1]] = pair_idx[0]
-
         # increment linkage count
         self.__link_count += 1
 
@@ -120,7 +117,7 @@ class HierarchicalClusterAnalysis:
         if new_cluster is None:
             raise ValueError("new cluster not exist")
         new_dist = self.__method.cluster_distance_multi(
-            new_cluster, self.__clusters)
+            new_cluster, self.__clusters, self.__dist_matrix, linked_pair)
 
         # update distance matrix
         self.__dist_matrix[:linked_pair[0], linked_pair[0]] \
