@@ -1,11 +1,11 @@
 import numpy as np
 
 from hshca import MultiDimensionalHCA
-from hshca.linkmethod import Centroid
+from hshca.linkmethod import Centroid, Ward
 from hshca.metric import Euclidean
 
 DATA_PATH = "./test/test_rand.npy"
-METHOD = Centroid
+METHOD = Ward
 METRIC = Euclidean
 CLUSTER_NUM = 5
 

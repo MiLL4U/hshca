@@ -137,14 +137,15 @@ class HierarchicalClusterAnalysis:
 
 class MultiDimensionalHCA(HierarchicalClusterAnalysis):
     def __init__(self, data: ndarray,
-                 method: type[LinkageMethod],
-                 metric: type[HCAMetric]) -> None:
+                 method: Type[LinkageMethod],
+                 metric: Type[HCAMetric],
+                 show_progress: Optional[bool] = None) -> None:
         self.__orig_shape = data.shape
         self.__flatten_shape = (np.prod(
             self.__orig_shape[:-1]), self.__orig_shape[-1])
 
         flatten_data = np.reshape(data, self.__flatten_shape)
-        super().__init__(flatten_data, method, metric)
+        super().__init__(flatten_data, method, metric, show_progress)
 
     @property
     def original_shape(self) -> Tuple[int, ...]:

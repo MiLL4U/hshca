@@ -16,7 +16,7 @@ ibw = ip.load(DATA_PATH)
 data = ibw.array  # 4D array (x, y, z, r)
 # print(data)
 
-hca = MultiDimensionalHCA(data, METHOD, METRIC)
+hca = MultiDimensionalHCA(data, METHOD, METRIC, True)
 hca.compute()
 
 dist = hca.linkage_distances
