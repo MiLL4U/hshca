@@ -57,9 +57,6 @@ class LinkageMethod(ABC):
         res[exist_cluster_idx] = distances
         return res
 
-    def centroid(self, cluster: Cluster) -> np.ndarray:
-        return np.array(np.average(cluster.member_vectors, axis=0))
-
 
 class Centroid(LinkageMethod):
     def __init__(self, metric: HCAMetric) -> None:
@@ -83,6 +80,9 @@ class Centroid(LinkageMethod):
             single_cluster, multi_clusters)
         return self.full_distance_vector(multi_clusters, centroid_distances)
         # NOTE: distance to single_cluster itself is zero
+
+    def centroid(self, cluster: Cluster) -> np.ndarray:
+        return np.array(np.average(cluster.member_vectors, axis=0))
 
     def centroid_distances(self, single_cluster: Cluster,
                            multi_clusters: List[Union[Cluster, None]]
@@ -135,7 +135,7 @@ class Centroid(LinkageMethod):
 #         return np.sum(np.square(distances))
 
 
-class Ward(LinkageMethod):
+class Ward(Centroid):
     def __init__(self, metric: HCAMetric) -> None:
         """
         Initialize the Ward linkage method.
