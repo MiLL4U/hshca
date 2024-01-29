@@ -10,6 +10,15 @@ from .metric import HCAMetric
 class LinkageMethod(ABC):
     @abstractmethod
     def __init__(self, metric: HCAMetric) -> None:
+        """
+        Abstract constructor for LinkageMethod.
+
+        Parameters:
+        - metric (HCAMetric): The metric to be used for distance calculations.
+
+        Raises:
+        - NotImplementedError: If called directly on the abstract class.
+        """
         raise NotImplementedError
 
     @abstractmethod
@@ -50,6 +59,12 @@ class LinkageMethod(ABC):
 
 class Centroid(LinkageMethod):
     def __init__(self, metric: HCAMetric) -> None:
+        """
+        Initialize the Centroid linkage method.
+
+        Parameters:
+        - metric (HCAMetric): The metric to be used for distance calculations.
+        """
         self.__metric = metric
 
     def cluster_distance_multi(self, single_cluster: Cluster,
