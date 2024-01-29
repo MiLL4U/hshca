@@ -20,8 +20,8 @@ class HierarchicalClusterAnalysis:
         self.__compute_dtype = data.dtype
         self.__metric = metric()
         self.__method = method(self.__metric)
-        self.__show_progress = show_progress if show_progress \
-            else self.DEFAULT_SHOW_PROGRESS
+        self.__show_progress = self.DEFAULT_SHOW_PROGRESS if \
+            show_progress is None else show_progress
 
         self.__init_internal_variables()
 
@@ -63,7 +63,9 @@ class HierarchicalClusterAnalysis:
     def compute(self) -> None:
         self.__init_dist_matrix()
 
-        for _ in tqdm(range(self.linkage_num)):
+        itr = tqdm(range(self.linkage_num)) if self.__show_progress \
+            else range(self.linkage_num)
+        for _ in itr:
             pair_idx = self.__search_dist_argmin()
             self.__make_linkage(pair_idx)
             self.__update_dist_matrix(pair_idx)
