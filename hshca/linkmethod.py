@@ -64,6 +64,11 @@ class Centroid(LinkageMethod):
 
         Parameters:
         - metric (HCAMetric): The metric to be used for distance calculations.
+
+        NOTE: In Centroid method, Euclidean distance must generally be used.
+        If this class is used with a metric other than Euclidean distance,
+        the centroid is defined by the Euclidean distance, but the variance is
+        calculated with the specified metric.
         """
         self.__metric = metric
 
