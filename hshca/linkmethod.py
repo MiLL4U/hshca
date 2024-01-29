@@ -57,6 +57,9 @@ class LinkageMethod(ABC):
         res[exist_cluster_idx] = distances
         return res
 
+    def centroid(self, cluster: Cluster) -> np.ndarray:
+        return np.array(np.average(cluster.member_vectors, axis=0))
+
 
 class Centroid(LinkageMethod):
     def __init__(self, metric: HCAMetric) -> None:
@@ -76,9 +79,8 @@ class Centroid(LinkageMethod):
     def cluster_distance_multi(self, single_cluster: Cluster,
                                multi_clusters: List[Union[Cluster, None]]
                                ) -> np.ndarray:
-        centroid_single = np.array(
-            [np.average(single_cluster.member_vectors, axis=0)])  # 2-dimension
-        centroids = np.array([np.average(cluster.member_vectors, axis=0)
+        centroid_single = self.centroid(single_cluster)
+        centroids = np.array([self.centroid(cluster)
                               for cluster in multi_clusters if cluster])
 
         distances = self.__metric.distance_matrix(centroid_single, centroids)
