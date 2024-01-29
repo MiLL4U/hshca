@@ -10,6 +10,7 @@ class Cluster:
     def __init__(self, all_vectors: ndarray, node_idxs: List[int]) -> None:
         self.__all_vectors = all_vectors
         self.__node_idxs = node_idxs
+        self.__prev_size = self.size
         # self.__repr_point = ...
         # TODO: hold representing point to improve performance?
 
@@ -20,6 +21,10 @@ class Cluster:
     @property
     def size(self) -> int:
         return len(self.__node_idxs)
+
+    @property
+    def previous_size(self) -> int:
+        return self.__prev_size
 
     @property
     def all_vectors(self) -> ndarray:
@@ -46,6 +51,7 @@ class Cluster:
         """
         if not other.has_same_vectors(self.__all_vectors):
             raise ValueError("attempted to merge clusters with different data")
+        self.__prev_size = self.size
         self.__node_idxs.extend(other.node_idxs)
         return self
 
