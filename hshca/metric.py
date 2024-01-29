@@ -18,11 +18,6 @@ class HCAMetric(ABC):
     def name(self) -> str:
         raise NotImplementedError
 
-    # @abstractmethod
-    # def vector_distance(self, vector_1: np.ndarray, vector_2: np.ndarray
-    #                     ) -> float:
-    #     raise NotImplementedError
-
     @abstractmethod
     def distance_matrix(self, vectors_1: np.ndarray,
                         vectors_2: Optional[np.ndarray] = None

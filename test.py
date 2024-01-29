@@ -1,7 +1,7 @@
 import numpy as np
 
 from hshca import HierarchicalClusterAnalysis
-from hshca.linkmethod import Ward
+from hshca.linkmethod import Centroid, Ward
 from hshca.metric import Euclidean
 
 DATA_PATH = "./test/test_rand.npy"
