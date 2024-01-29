@@ -1,11 +1,11 @@
 import numpy as np
 
 from hshca import HierarchicalClusterAnalysis
-from hshca.linkmethod import Centroid
+from hshca.linkmethod import Ward
 from hshca.metric import Euclidean
 
 DATA_PATH = "./test/test_rand.npy"
-METHOD = Centroid
+METHOD = Ward
 METRIC = Euclidean
 
 data = np.array(np.load(DATA_PATH))  # 3D array (x, y, r)
