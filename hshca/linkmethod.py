@@ -67,7 +67,7 @@ class Centroid(LinkageMethod):
 
         NOTE: In Centroid method, Euclidean distance must generally be used.
         If this class is used with a metric other than Euclidean distance,
-        the centroid is defined by the Euclidean distance, but the variance is
+        the centroid is defined by the Euclidean distance, but the distance is
         calculated with the specified metric.
         """
         self.__metric = metric
