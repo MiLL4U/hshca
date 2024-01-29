@@ -2,6 +2,7 @@ from typing import List, Optional, Tuple, Type, Union, cast
 
 import numpy as np
 from numpy import ndarray
+from tqdm import tqdm
 
 from .cluster import Cluster
 from .linkmethod import LinkageMethod
@@ -58,7 +59,7 @@ class HierarchicalClusterAnalysis:
     def compute(self) -> None:
         self.__init_dist_matrix()
 
-        for _ in range(self.linkage_num):
+        for _ in tqdm(range(self.linkage_num)):
             pair_idx = self.__search_dist_argmin()
             self.__make_linkage(pair_idx)
             self.__update_dist_matrix(pair_idx)
