@@ -21,7 +21,11 @@ class Cluster:
         return len(self.__node_idxs)
 
     @property
-    def vectors(self) -> ndarray:
+    def all_vectors(self) -> ndarray:
+        return self.__all_vectors
+
+    @property
+    def member_vectors(self) -> ndarray:
         return self.__all_vectors[self.__node_idxs]
 
     def has_same_vectors(self, vectors: ndarray) -> bool:

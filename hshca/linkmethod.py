@@ -71,8 +71,8 @@ class Centroid(LinkageMethod):
                                multi_clusters: List[Union[Cluster, None]]
                                ) -> np.ndarray:
         centroid_single = np.array(
-            [np.average(single_cluster.vectors, axis=0)])  # 2-dimension
-        centroids = np.array([np.average(cluster.vectors, axis=0)
+            [np.average(single_cluster.member_vectors, axis=0)])  # 2-dimension
+        centroids = np.array([np.average(cluster.member_vectors, axis=0)
                               for cluster in multi_clusters if cluster])
 
         distances = self.__metric.distance_matrix(centroid_single, centroids)
