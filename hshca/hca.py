@@ -44,8 +44,7 @@ class HierarchicalClusterAnalysis:
             Cluster(self.data, [i]) for i in range(self.data_num)]
         self.__link_count = 0
         self.__linkage_hist = np.full(
-            (self.linkage_num, 2), -1,  # REVIEW: is -1 appropriate for empty?
-            dtype=int)
+            (self.linkage_num, 2), -1, dtype=int)   # -1: empty
         self.__linkage_dist = np.full(
             self.linkage_num, np.inf, dtype=self.__compute_dtype)
 
