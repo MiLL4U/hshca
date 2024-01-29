@@ -135,6 +135,42 @@ class Centroid(LinkageMethod):
 #         return np.sum(np.square(distances))
 
 
+# class Ward(Centroid):
+#     def __init__(self, metric: HCAMetric) -> None:
+#         """
+#         Initialize the Ward linkage method.
+
+#         Args:
+#         - metric (HCAMetric): The metric to be used for distance calculations.
+
+#         NOTE: In Ward's method, Euclidean distance must generally be used.
+#         If this class is used with a metric other than Euclidean distance,
+#         the centroid is defined by the Euclidean distance, but the variance is
+#         calculated with the specified metric.
+
+#         NOTE: This class was implemented based on the following web page.
+#         https://www.business-research-lab.com/220512-3/
+#         """
+#         super().__init__(metric)
+
+#     def cluster_distance_multi(self, single_cluster: Cluster,
+#                                multi_clusters: List[Cluster | None]
+#                                ) -> np.ndarray:
+#         centroid_distances = self.centroid_distances(
+#             single_cluster, multi_clusters)
+#         factors = [self.ward_distance_factor(single_cluster, cluster)
+#                    for cluster in multi_clusters if cluster]
+#         ward_distances = [distance * factor for distance, factor
+#                           in zip(centroid_distances, factors)]
+#         return self.full_distance_vector(multi_clusters, ward_distances)
+
+#     def ward_distance_factor(self, cluster_1: Cluster,
+#                              cluster_2: Cluster) -> float:
+#         size_1 = cluster_1.size
+#         size_2 = cluster_2.size
+#         return np.sqrt((size_1 * size_2 * 2) / (size_1 + size_2))
+
+
 class Ward(Centroid):
     def __init__(self, metric: HCAMetric) -> None:
         """
@@ -149,23 +185,12 @@ class Ward(Centroid):
         calculated with the specified metric.
 
         NOTE: This class was implemented based on the following web page.
-        https://www.business-research-lab.com/220512-3/
+        https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.linkage.html
         """
         super().__init__(metric)
 
     def cluster_distance_multi(self, single_cluster: Cluster,
                                multi_clusters: List[Cluster | None]
                                ) -> np.ndarray:
-        centroid_distances = self.centroid_distances(
-            single_cluster, multi_clusters)
-        factors = [self.ward_distance_factor(single_cluster, cluster)
-                   for cluster in multi_clusters if cluster]
-        ward_distances = [distance * factor for distance, factor
-                          in zip(centroid_distances, factors)]
+        ward_distances: List[float] = []
         return self.full_distance_vector(multi_clusters, ward_distances)
-
-    def ward_distance_factor(self, cluster_1: Cluster,
-                             cluster_2: Cluster) -> float:
-        size_1 = cluster_1.size
-        size_2 = cluster_2.size
-        return np.sqrt((size_1 * size_2 * 2) / (size_1 + size_2))
