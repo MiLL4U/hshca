@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import List
 
 from numpy import ndarray
+from copy import deepcopy
 
 
 class Cluster:
@@ -32,7 +33,36 @@ class Cluster:
         return True if vectors is self.__all_vectors else False
 
     def merge(self, other: Cluster) -> Cluster:
+        """Merge the current cluster with another cluster.
+
+        Args:
+            other (Cluster): The cluster to merge with.
+
+        Raises:
+            ValueError: If the clusters being merged have different data.
+
+        Returns:
+            Cluster: The current cluster after merging.
+        """
         if not other.has_same_vectors(self.__all_vectors):
             raise ValueError("attempted to merge clusters with different data")
         self.__node_idxs.extend(other.node_idxs)
         return self
+
+    def merged(self, other: Cluster) -> Cluster:
+        """Create a new cluster by merging the current cluster with another
+        cluster.
+
+        Args:
+            other (Cluster): The cluster to merge with.
+
+        Raises:
+            ValueError: If the clusters being merged have different data.
+
+        Returns:
+            Cluster: A new cluster resulting from the merge, leaving the current
+                     and the other cluster unchanged.
+        """
+        res = Cluster(self.all_vectors, deepcopy(self.node_idxs))
+        res.merge(other)
+        return res
