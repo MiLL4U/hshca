@@ -137,3 +137,18 @@ class MultiDimensionalHCA(HierarchicalClusterAnalysis):
                  method: type[LinkageMethod],
                  metric: type[HCAMetric]) -> None:
         super().__init__(data, method, metric)
+
+    @property
+    def original_shape(self) -> Tuple[int, ...]:
+        raise NotImplementedError
+
+    @property
+    def map_shape(self) -> Tuple[int, ...]:
+        raise NotImplementedError
+
+    @property
+    def flatten_shape(self) -> Tuple[int, int]:
+        raise NotImplementedError
+
+    def get_cluster_map(self, max_cluster_num: int) -> ndarray:
+        raise NotImplementedError
