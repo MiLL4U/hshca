@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, cast
+from typing import List, Optional, Tuple, cast
 
 import numpy as np
 from scipy.spatial import distance
@@ -42,23 +42,32 @@ class HyperSpectralHCA(MultiDimensionalHCA):
         transposed = indices.transpose(
             [_ for _ in range(1, len(self.map_shape) + 1)] + [0])
         reshaped = transposed.reshape((self.data_num, len(self.map_shape)))
-        self.__cls_coords = reshaped * self.__phys_scale
+        res = reshaped * self.__phys_scale
+        self.__cls_coords = cast(
+            List[List[np.ndarray]], [[row] for row in res])
 
     def __init_physical_dist_matrix(self) -> None:
-        res = distance.cdist(
-            self.__cls_coords, self.__cls_coords, self.PHYSICAL_METRIC)
-        res += np.diag(np.full(res.shape[0], np.inf))
+        coords = np.array(self.__cls_coords).reshape(
+            (self.data_num, len(self.map_shape)))
+        res = distance.cdist(coords, coords, self.PHYSICAL_METRIC)
+        res[np.tril_indices(self.data_num)] = np.inf
         self.__phys_dist_matrix = res
+
+    def spatial_centroids(self) -> np.ndarray:
+        res = [np.average(np.array(coords), axis=0)
+               if coords else np.full(len(self.map_shape), np.inf)
+               for coords in self.__cls_coords]
+        return np.array(res)
 
     def compute(self) -> None:
         itr = tqdm(range(self.linkage_num)) if self.show_proress_enabled \
             else range(self.linkage_num)
         for _ in itr:
-            # same process as superclass
-            pair_idx = self.search_dist_argmin()
-            self.make_linkage(pair_idx)
+            self.pair_idx = self.search_dist_argmin()
+            self.make_linkage(self.pair_idx)
+            self.update_dist_matrix(self.pair_idx)
 
-            self.update_dist_matrix(pair_idx)
+            self.__update_cls_coords(self.pair_idx)
             self.__update_physical_dist_matrix()
             self.__update_mixed_dist_matrix()
 
@@ -78,10 +87,25 @@ class HyperSpectralHCA(MultiDimensionalHCA):
             np.argmin(self.__mixed_dist_matrix), self.__mixed_dist_matrix.shape)
         return cast(Tuple[int, int], res)
 
+    def __update_physical_dist_matrix(self) -> None:
+        # HACK: decrease update frequency
+        spatial_centroids = self.spatial_centroids()
+        res = distance.cdist(
+            spatial_centroids, spatial_centroids, self.PHYSICAL_METRIC)
+        res[np.tril_indices(self.data_num)] = np.inf
+        self.__phys_dist_matrix = res
+        self.__phys_dist_matrix[np.isnan(self.__phys_dist_matrix)] = np.inf
+
+    def __update_cls_coords(self, linked_pair: Tuple[int, int]) -> None:
+        coord_1 = np.average(self.__cls_coords[linked_pair[0]], axis=0)
+        coord_2 = np.average(
+            self.__cls_coords[linked_pair[1]], axis=0)  # deleted cluster
+
+        self.__cls_coords[linked_pair[0]].append((coord_1 + coord_2) / 2)
+        # delete coordinates of deleted cluster
+        self.__cls_coords[linked_pair[1]] = []
+
     def __update_mixed_dist_matrix(self) -> None:
         # spectral + physical * factor
         self.__mixed_dist_matrix = self.dist_matrix + \
             self.__phys_dist_matrix * self.__phys_factor
-
-    def __update_physical_dist_matrix(self) -> None:
-        pass
