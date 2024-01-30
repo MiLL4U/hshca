@@ -1,7 +1,7 @@
 import numpy as np
 
 from hshca import MultiDimensionalHCA
-from hshca.linkmethod import Centroid, Ward
+from hshca.linkmethod import Centroid, Ward  # noqa
 from hshca.metric import Euclidean
 
 DATA_PATH = "./test/test_rand.npy"
