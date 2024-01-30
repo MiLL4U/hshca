@@ -95,7 +95,7 @@ class Centroid(LinkageMethod):
         return self.__metric.distance_matrix(centroid_single, centroids_multi)
 
 
-class Ward(Centroid):
+class Ward(LinkageMethod):
     def __init__(self, metric: HCAMetric) -> None:
         """
         Initialize the Ward linkage method.
@@ -111,7 +111,6 @@ class Ward(Centroid):
         NOTE: This class was implemented based on the following web page.
         https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.linkage.html
         """
-        super().__init__(metric)
 
     def cluster_distance_multi(self, single_cluster: Cluster,
                                multi_clusters: List[Union[Cluster, None]],
