@@ -17,25 +17,23 @@ SPATIAL_FACTORS = (1e-7, 5e-7, 1e-6, 5e-6, 1e-5,
                    1e-4, 3e-4, 5e-4, 8e-4, 3e-3, 3e-2)
 SPATIAL_SCALE = (1.0, 1.0, 1.0)
 
-CLUSTER_NUM = 5
+CLUSTER_NUMS = (3, 4, 5, 6, 7, 8)
 
 ibw = ip.load(DATA_PATH)
 data = ibw.array  # 4D array (x, y, z, r)
 
-results: List[np.ndarray] = []
-for factor in SPATIAL_FACTORS:
+
+for factor_idx, factor in enumerate(SPATIAL_FACTORS):
     print(factor)
     hca = HyperSpectralHCA(
         data, METHOD, METRIC,
         factor, SPATIAL_SCALE,
         show_progress=True)
     hca.compute()
-    res = hca.get_cluster_map(CLUSTER_NUM).reshape(MAP_SHAPE).T
-    results.append(res)
 
-i = 0
-for factor, result in zip(SPATIAL_FACTORS, results):
-    name = f"{i}_{factor:.0e}.png"
-    plt.imshow(result)
-    plt.savefig(name)
-    i += 1
+    for cluster_num in CLUSTER_NUMS:
+        res = hca.get_cluster_map(cluster_num).reshape(MAP_SHAPE).T
+        plt.imshow(res)
+
+        name = f"cls{cluster_num}_{factor_idx}_{factor:.0e}.png"
+        plt.savefig(name)

@@ -13,7 +13,7 @@ METRIC = Euclidean
 SPATIAL_DIST_FACTOR = 0.0003
 SPATIAL_SCALE = (1.0, 1.0, 1.0)
 
-CLUSTER_NUM = 5
+CLUSTER_NUMS = (3, 4, 5, 6, 7, 8)
 
 ibw = ip.load(DATA_PATH)
 data = ibw.array  # 4D array (x, y, z, r)
@@ -23,13 +23,9 @@ hca = MultiDimensionalHCA(
     data, METHOD, METRIC, show_progress=True)
 hca.compute()
 
-"""
-dist = hca.linkage_distances
-hist = hca.linkage_history
-for d, h in zip(dist, hist):
-    print(d, h)
-"""
+for cluster_num in CLUSTER_NUMS:
+    res = hca.get_cluster_map(cluster_num).reshape(MAP_SHAPE).T
+    plt.imshow(res)
 
-res_map = hca.get_cluster_map(CLUSTER_NUM).reshape(MAP_SHAPE).T
-plt.imshow(res_map)
-plt.show()
+    name = f"cls{cluster_num}_normal.png"
+    plt.savefig(name)
