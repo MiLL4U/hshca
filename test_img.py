@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 from hshca import MultiDimensionalHCA
 from hshca.linkmethod import Centroid, Ward  # noqa
-from hshca.metric import Euclidean
+from hshca.metric import Euclidean, CityBlock
 
 DATA_PATH = "./test/mHeLa_control_1_smth.ibw"
 MAP_SHAPE = (30, 30)

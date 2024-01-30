@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Optional, Tuple
 
 from numpy import ndarray
 
@@ -14,5 +14,5 @@ class HyperSpectralHCA(MultiDimensionalHCA):
                  spectral_metric: type[HCAMetric],
                  phys_dist_ratio: float,
                  physical_scale: Tuple[float, ...],
-                 ) -> None:
-        super().__init__(data, method, spectral_metric)
+                 show_progress: Optional[bool] = None) -> None:
+        super().__init__(data, method, spectral_metric, show_progress)
