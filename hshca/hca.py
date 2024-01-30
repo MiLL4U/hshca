@@ -38,10 +38,6 @@ class HierarchicalClusterAnalysis:
         return self.data_num - 1
 
     @property
-    def distance_matrix(self) -> ndarray:
-        return self.__dist_matrix
-
-    @property
     def linkage_history(self) -> ndarray:
         return self.__linkage_hist
 
@@ -59,14 +55,13 @@ class HierarchicalClusterAnalysis:
             (self.linkage_num, 2), -1, dtype=int)   # -1: empty
         self.__linkage_dist = np.full(
             self.linkage_num, np.inf, dtype=self.__compute_dtype)
-
-    def compute(self) -> None:
         self.__init_dist_matrix()
 
+    def compute(self) -> None:
         itr = tqdm(range(self.linkage_num)) if self.__show_progress \
             else range(self.linkage_num)
         for _ in itr:
-            pair_idx = self.__search_dist_argmin()
+            pair_idx = self.search_dist_argmin()
             self.__make_linkage(pair_idx)
             self.__update_dist_matrix(pair_idx)
 
@@ -89,17 +84,17 @@ class HierarchicalClusterAnalysis:
 
         return res
 
-    def __search_dist_argmin(self) -> Tuple[int, int]:
+    def search_dist_argmin(self) -> Tuple[int, int]:
         # HACK: optimize search algorhythm
         res = np.unravel_index(
-            np.argmin(self.__dist_matrix), self.__dist_matrix.shape)
+            np.argmin(self.dist_matrix), self.dist_matrix.shape)
 
         return cast(Tuple[int, int], res)
 
     def __make_linkage(self, pair_idx: Tuple[int, int]) -> None:
         # save history
         self.__linkage_hist[self.__link_count] = pair_idx
-        self.__linkage_dist[self.__link_count] = self.__dist_matrix[pair_idx]
+        self.__linkage_dist[self.__link_count] = self.dist_matrix[pair_idx]
 
         # merge cluster
         cluster_1 = self.__clusters[pair_idx[0]]
@@ -117,22 +112,22 @@ class HierarchicalClusterAnalysis:
         if new_cluster is None:
             raise ValueError("new cluster not exist")
         new_dist = self.__method.cluster_distance_multi(
-            new_cluster, self.__clusters, self.__dist_matrix, linked_pair)
+            new_cluster, self.__clusters, self.dist_matrix, linked_pair)
 
         # update distance matrix
-        self.__dist_matrix[:linked_pair[0], linked_pair[0]] \
+        self.dist_matrix[:linked_pair[0], linked_pair[0]] \
             = new_dist[:linked_pair[0]]  # vertical
-        self.__dist_matrix[linked_pair[0], linked_pair[0]:] \
+        self.dist_matrix[linked_pair[0], linked_pair[0]:] \
             = new_dist[linked_pair[0]:]  # horizontal
 
         # fill row and column of linked node with inf
-        self.__dist_matrix[linked_pair[1]] = np.inf
-        self.__dist_matrix[:, linked_pair[1]] = np.inf
-        self.__dist_matrix[linked_pair[0], linked_pair[0]] = np.inf
+        self.dist_matrix[linked_pair[1]] = np.inf
+        self.dist_matrix[:, linked_pair[1]] = np.inf
+        self.dist_matrix[linked_pair[0], linked_pair[0]] = np.inf
 
     def __init_dist_matrix(self) -> None:
-        self.__dist_matrix = self.__metric.distance_matrix(self.__data)
-        self.__dist_matrix[np.tril_indices(self.data_num)] = np.inf
+        self.dist_matrix = self.__metric.distance_matrix(self.__data)
+        self.dist_matrix[np.tril_indices(self.data_num)] = np.inf
 
 
 class MultiDimensionalHCA(HierarchicalClusterAnalysis):

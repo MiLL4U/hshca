@@ -10,8 +10,8 @@ MAP_SHAPE = (30, 30)
 
 METHOD = Ward
 METRIC = Euclidean
-PHYS_DIST_FACTOR = 1.0
-PHYS_SCALE = (0.3, 0.5, 1.0)
+PHYS_DIST_FACTOR = 0.0003
+PHYS_SCALE = (1.0, 1.0, 1.0)
 
 CLUSTER_NUM = 4
 
@@ -23,6 +23,7 @@ hca = HyperSpectralHCA(
     data, METHOD, METRIC,
     PHYS_DIST_FACTOR, PHYS_SCALE,
     show_progress=True)
+hca.print_dist_scales()
 hca.compute()
 
 """
