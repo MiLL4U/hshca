@@ -13,7 +13,8 @@ MAP_SHAPE = (30, 30)
 
 METHOD = Ward
 METRIC = Euclidean
-SPATIAL_FACTORS = (0.00001, 0.0001, 0.0003, 0.0005, 0.0008, 0.003, 0.03)
+SPATIAL_FACTORS = (1e-7, 5e-7, 1e-6, 5e-6, 1e-5,
+                   1e-4, 3e-4, 5e-4, 8e-4, 3e-3, 3e-2)
 SPATIAL_SCALE = (1.0, 1.0, 1.0)
 
 CLUSTER_NUM = 5
@@ -32,8 +33,9 @@ for factor in SPATIAL_FACTORS:
     res = hca.get_cluster_map(CLUSTER_NUM).reshape(MAP_SHAPE).T
     results.append(res)
 
+i = 0
 for factor, result in zip(SPATIAL_FACTORS, results):
-    print(factor)
+    name = f"{i}_{factor:.0e}.png"
     plt.imshow(result)
-    plt.show()
-    plt.close()
+    plt.savefig(name)
+    i += 1
