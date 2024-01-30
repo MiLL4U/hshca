@@ -8,18 +8,12 @@ from .metric import HCAMetric
 
 
 class LinkageMethod(ABC):
-    @abstractmethod
     def __init__(self, metric: HCAMetric) -> None:
-        """
-        Abstract constructor for LinkageMethod.
+        self.__metric = metric
 
-        Parameters:
-        - metric (HCAMetric): The metric to be used for distance calculations.
-
-        Raises:
-        - NotImplementedError: If called directly on the abstract class.
-        """
-        raise NotImplementedError
+    @property
+    def metric(self) -> HCAMetric:
+        return self.__metric
 
     @abstractmethod
     def cluster_distance_multi(self, single_cluster: Cluster,
@@ -57,3 +51,14 @@ class LinkageMethod(ABC):
         res = np.full(len(clusters), np.inf)
         res[exist_cluster_idx] = distances
         return res
+
+    def centroid(self, cluster: Cluster) -> np.ndarray:
+        return np.array(np.average(cluster.member_vectors, axis=0))
+
+    def centroid_distances(self, single_cluster: Cluster,
+                           multi_clusters: List[Union[Cluster, None]]
+                           ) -> np.ndarray:
+        centroid_single = self.centroid(single_cluster)
+        centroids_multi = np.array([self.centroid(cluster)
+                                    for cluster in multi_clusters if cluster])
+        return self.metric.distance_matrix(centroid_single, centroids_multi)

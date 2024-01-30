@@ -21,7 +21,7 @@ class Centroid(LinkageMethod):
         the centroid is defined by the Euclidean distance, but the distance is
         calculated with the specified metric.
         """
-        self.__metric = metric
+        super().__init__(metric)
 
     def cluster_distance_multi(self, single_cluster: Cluster,
                                multi_clusters: List[Union[Cluster, None]],
@@ -31,14 +31,3 @@ class Centroid(LinkageMethod):
             single_cluster, multi_clusters)
         return self.full_distance_vector(multi_clusters, centroid_distances)
         # NOTE: distance to single_cluster itself is zero
-
-    def centroid(self, cluster: Cluster) -> np.ndarray:
-        return np.array(np.average(cluster.member_vectors, axis=0))
-
-    def centroid_distances(self, single_cluster: Cluster,
-                           multi_clusters: List[Union[Cluster, None]]
-                           ) -> np.ndarray:
-        centroid_single = self.centroid(single_cluster)
-        centroids_multi = np.array([self.centroid(cluster)
-                                    for cluster in multi_clusters if cluster])
-        return self.__metric.distance_matrix(centroid_single, centroids_multi)
