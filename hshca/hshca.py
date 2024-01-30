@@ -1,6 +1,6 @@
 from typing import Optional, Tuple
 
-from numpy import ndarray
+import numpy as np
 
 from hshca.linkmethod import LinkageMethod
 from hshca.metric import HCAMetric
@@ -11,7 +11,7 @@ from .hca import MultiDimensionalHCA
 class HyperSpectralHCA(MultiDimensionalHCA):
     DEFAULT_PHYS_DIST_FACTOR = 1.0
 
-    def __init__(self, data: ndarray,
+    def __init__(self, data: np.ndarray,
                  method: type[LinkageMethod],
                  spectral_metric: type[HCAMetric],
                  phys_dist_factor: Optional[float] = None,
@@ -29,3 +29,13 @@ class HyperSpectralHCA(MultiDimensionalHCA):
 
         self.__phys_factor = phys_dist_factor
         self.__phys_scale = physical_scale
+
+        self.__init_cluster_coordinates()
+
+    def __init_cluster_coordinates(self) -> None:
+        indices = np.indices(self.map_shape)
+        transposed = indices.transpose(
+            [_ for _ in range(1, len(self.map_shape) + 1)] + [0])
+        reshaped = transposed.reshape((self.data_num, len(self.map_shape)))
+        scaled = reshaped * self.__phys_scale
+        self.__cls_coords = [coord for coord in scaled]

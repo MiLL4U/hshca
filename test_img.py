@@ -10,13 +10,19 @@ MAP_SHAPE = (30, 30)
 
 METHOD = Ward
 METRIC = Euclidean
+PHYS_DIST_FACTOR = 1.0
+PHYS_SCALE = (0.3, 0.5, 1.0)
+
 CLUSTER_NUM = 4
 
 ibw = ip.load(DATA_PATH)
 data = ibw.array  # 4D array (x, y, z, r)
 # print(data)
 
-hca = HyperSpectralHCA(data, METHOD, METRIC, show_progress=True)
+hca = HyperSpectralHCA(
+    data, METHOD, METRIC,
+    PHYS_DIST_FACTOR, PHYS_SCALE,
+    show_progress=True)
 hca.compute()
 
 """
