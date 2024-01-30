@@ -5,9 +5,7 @@ import numpy as np
 from .cluster import Cluster
 from .linkmethodabc import LinkageMethod
 from .metric import HCAMetric
-from .ward import ScipyWard
-
-Ward = ScipyWard  # set default Ward method as ScipyWard
+from .ward import ScipyWard as Ward  # noqa: set ScipyWard as default Ward method
 
 
 class Centroid(LinkageMethod):
