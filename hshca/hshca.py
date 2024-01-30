@@ -1,7 +1,8 @@
-from typing import Optional, Tuple
+from typing import Optional, Tuple, cast
 
 import numpy as np
 from scipy.spatial import distance
+from tqdm import tqdm
 
 from hshca.linkmethod import LinkageMethod
 from hshca.metric import HCAMetric
@@ -33,7 +34,8 @@ class HyperSpectralHCA(MultiDimensionalHCA):
         self.__phys_scale = physical_scale
 
         self.__init_cluster_coordinates()
-        self.__init_physical_distance_matrix()
+        self.__init_physical_dist_matrix()
+        self.__update_mixed_dist_matrix()
 
     def __init_cluster_coordinates(self) -> None:
         indices = np.indices(self.map_shape)
@@ -42,16 +44,23 @@ class HyperSpectralHCA(MultiDimensionalHCA):
         reshaped = transposed.reshape((self.data_num, len(self.map_shape)))
         self.__cls_coords = reshaped * self.__phys_scale
 
-    def __init_physical_distance_matrix(self) -> None:
+    def __init_physical_dist_matrix(self) -> None:
         res = distance.cdist(
             self.__cls_coords, self.__cls_coords, self.PHYSICAL_METRIC)
         res += np.diag(np.full(res.shape[0], np.inf))
         self.__phys_dist_matrix = res
 
     def compute(self) -> None:
-        self.__update_physical_distance_matrix()
-        self.__update_mixed_dist_matrix()
-        super().compute()
+        itr = tqdm(range(self.linkage_num)) if self.show_proress_enabled \
+            else range(self.linkage_num)
+        for _ in itr:
+            # same process as superclass
+            pair_idx = self.search_dist_argmin()
+            self.make_linkage(pair_idx)
+
+            self.update_dist_matrix(pair_idx)
+            self.__update_physical_dist_matrix()
+            self.__update_mixed_dist_matrix()
 
     def print_dist_scales(self) -> None:
         print("min (spectral, spatial):")
@@ -65,12 +74,14 @@ class HyperSpectralHCA(MultiDimensionalHCA):
         print("   ", np.max(d_mat_temp), np.max(pd_mat_temp))
 
     def search_dist_argmin(self) -> Tuple[int, int]:
-        return super().search_dist_argmin()
+        res = np.unravel_index(
+            np.argmin(self.__mixed_dist_matrix), self.__mixed_dist_matrix.shape)
+        return cast(Tuple[int, int], res)
 
     def __update_mixed_dist_matrix(self) -> None:
         # spectral + physical * factor
         self.__mixed_dist_matrix = self.dist_matrix + \
             self.__phys_dist_matrix * self.__phys_factor
 
-    def __update_physical_distance_matrix(self) -> None:
+    def __update_physical_dist_matrix(self) -> None:
         pass

@@ -13,7 +13,7 @@ METRIC = Euclidean
 PHYS_DIST_FACTOR = 0.0003
 PHYS_SCALE = (1.0, 1.0, 1.0)
 
-CLUSTER_NUM = 4
+CLUSTER_NUM = 5
 
 ibw = ip.load(DATA_PATH)
 data = ibw.array  # 4D array (x, y, z, r)

@@ -30,6 +30,10 @@ class HierarchicalClusterAnalysis:
         return self.__data
 
     @property
+    def show_proress_enabled(self) -> bool:
+        return self.__show_progress
+
+    @property
     def data_num(self) -> int:
         return self.__data.shape[0]
 
@@ -58,12 +62,12 @@ class HierarchicalClusterAnalysis:
         self.__init_dist_matrix()
 
     def compute(self) -> None:
-        itr = tqdm(range(self.linkage_num)) if self.__show_progress \
+        itr = tqdm(range(self.linkage_num)) if self.show_proress_enabled \
             else range(self.linkage_num)
         for _ in itr:
             pair_idx = self.search_dist_argmin()
-            self.__make_linkage(pair_idx)
-            self.__update_dist_matrix(pair_idx)
+            self.make_linkage(pair_idx)
+            self.update_dist_matrix(pair_idx)
 
     def get_fcluster(self, max_cluster_num: int) -> ndarray:
         max_cluster_num = min(max_cluster_num, self.data_num)
@@ -91,7 +95,7 @@ class HierarchicalClusterAnalysis:
 
         return cast(Tuple[int, int], res)
 
-    def __make_linkage(self, pair_idx: Tuple[int, int]) -> None:
+    def make_linkage(self, pair_idx: Tuple[int, int]) -> None:
         # save history
         self.__linkage_hist[self.__link_count] = pair_idx
         self.__linkage_dist[self.__link_count] = self.dist_matrix[pair_idx]
@@ -106,7 +110,7 @@ class HierarchicalClusterAnalysis:
         # increment linkage count
         self.__link_count += 1
 
-    def __update_dist_matrix(self, linked_pair: Tuple[int, int]) -> None:
+    def update_dist_matrix(self, linked_pair: Tuple[int, int]) -> None:
         # get distances to new cluster
         new_cluster = self.__clusters[linked_pair[0]]
         if new_cluster is None:
