@@ -1,8 +1,5 @@
-from typing import List
-
 import ibwpy as ip
 import matplotlib.pyplot as plt
-import numpy as np
 
 from hshca import HyperSpectralHCA
 from hshca.linkmethod import Centroid, Ward  # noqa
