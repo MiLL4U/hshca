@@ -29,7 +29,7 @@ for factor in SPATIAL_FACTORS:
         factor, SPATIAL_SCALE,
         show_progress=True)
     hca.compute()
-    res = hca.get_cluster_map(CLUSTER_NUM).reshape(MAP_SHAPE)
+    res = hca.get_cluster_map(CLUSTER_NUM).reshape(MAP_SHAPE).T
     results.append(res)
 
 for factor, result in zip(SPATIAL_FACTORS, results):

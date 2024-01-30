@@ -33,8 +33,6 @@ for d, h in zip(dist, hist):
     print(d, h)
 """
 
-res = hca.get_fcluster(CLUSTER_NUM).T
-
 res_map = hca.get_cluster_map(CLUSTER_NUM).reshape(MAP_SHAPE).T
 plt.imshow(res_map)
 plt.show()
