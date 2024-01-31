@@ -58,12 +58,6 @@ class HyperSpectralHCA(MultiDimensionalHCA):
     def spatial_factor(self) -> float:
         return self.__spt_factor
 
-    def spatial_centroids(self) -> np.ndarray:
-        res = [np.average(np.array(coords), axis=0)
-               if coords else np.full(len(self.map_shape), np.inf)
-               for coords in self.__cls_coords]
-        return np.array(res)
-
     def compute(self) -> None:
         itr = tqdm(range(self.linkage_num)) if self.show_proress_enabled \
             else range(self.linkage_num)
@@ -94,12 +88,18 @@ class HyperSpectralHCA(MultiDimensionalHCA):
 
     def __update_spatial_dist_matrix(self) -> None:
         # HACK: decrease update frequency
-        spatial_centroids = self.spatial_centroids()
+        spatial_centroids = self.__spatial_centroids()
         res = distance.cdist(
             spatial_centroids, spatial_centroids, self.SPATIAL_METRIC)
         res[np.tril_indices(self.data_num)] = np.inf
         self.__spt_dist_matrix = res
         self.__spt_dist_matrix[np.isnan(self.__spt_dist_matrix)] = np.inf
+
+    def __spatial_centroids(self) -> np.ndarray:
+        res = [np.average(np.array(coords), axis=0)
+               if coords else np.full(len(self.map_shape), np.inf)
+               for coords in self.__cls_coords]
+        return np.array(res)
 
     def __update_cls_coords(self, linked_pair: Tuple[int, int]) -> None:
         coord_1 = np.average(self.__cls_coords[linked_pair[0]], axis=0)
