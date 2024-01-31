@@ -24,6 +24,7 @@ data = np.load(DATA_PATH)  # 3D array (x, y, r)
 
 hca = HyperSpectralHCA(
     data, METHOD, METRIC, SPATIAL_FACTOR, SPATIAL_SCALE, show_progress=True)
+print("auto spatial factor:", hca.auto_spatial_factor())
 print("spatial factor:", hca.spatial_factor)
 hca.print_dist_scales()
 hca.compute()

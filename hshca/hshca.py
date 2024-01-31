@@ -13,6 +13,7 @@ from .hca import MultiDimensionalHCA
 class HyperSpectralHCA(MultiDimensionalHCA):
     SPATIAL_METRIC = 'euclidean'
     DEFAULT_SPATIAL_DIST_FACTOR = 1.0
+    AUTO_FACTOR_RATIO = 0.033  # factor = spectral / spatial * ratio
 
     def __init__(self, data: np.ndarray,
                  method: type[LinkageMethod],
@@ -57,6 +58,11 @@ class HyperSpectralHCA(MultiDimensionalHCA):
     @property
     def spatial_factor(self) -> float:
         return self.__spt_factor
+
+    def auto_spatial_factor(self) -> float:
+        res = np.min(self.dist_matrix) / np.min(self.__spt_dist_matrix) \
+            * self.AUTO_FACTOR_RATIO
+        return res
 
     def compute(self) -> None:
         itr = tqdm(range(self.linkage_num)) if self.show_proress_enabled \
