@@ -21,20 +21,21 @@ class HyperSpectralHCA(MultiDimensionalHCA):
                  spatial_scale: Optional[Tuple[float, ...]] = None,
                  show_progress: Optional[bool] = None) -> None:
         super().__init__(data, method, spectral_metric, show_progress)
-        if spatial_dist_factor is None:
-            spatial_dist_factor = self.DEFAULT_SPATIAL_DIST_FACTOR
-            print("INFO: spatial_dist_factor is not specified")
-            print("INFO: using default value (1.0)")
+
         if spatial_scale is None:
             spatial_scale = tuple(1.0 for _ in range(data.ndim - 1))
             print("INFO: spatial_scale is not specified")
             print("INFO: using default value:", spatial_scale)
-
-        self.__spt_factor = spatial_dist_factor
         self.__spt_scale = spatial_scale
-
         self.__init_cluster_coordinates()
         self.__init_spatial_dist_matrix()
+
+        if spatial_dist_factor is None:
+            spatial_dist_factor = self.DEFAULT_SPATIAL_DIST_FACTOR
+            print("INFO: spatial_dist_factor is not specified")
+            print("INFO: using default value (1.0)")
+        self.__spt_factor = spatial_dist_factor
+
         self.__update_mixed_dist_matrix()
 
     def __init_cluster_coordinates(self) -> None:
@@ -52,6 +53,10 @@ class HyperSpectralHCA(MultiDimensionalHCA):
         res = distance.cdist(coords, coords, self.SPATIAL_METRIC)
         res[np.tril_indices(self.data_num)] = np.inf
         self.__spt_dist_matrix = res
+
+    @property
+    def spatial_factor(self) -> float:
+        return self.__spt_factor
 
     def spatial_centroids(self) -> np.ndarray:
         res = [np.average(np.array(coords), axis=0)
