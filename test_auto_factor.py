@@ -12,7 +12,7 @@ DST_PATH = "./dst/"
 
 METHOD = Ward
 METRIC = Euclidean
-SPATIAL_FACTOR = 1e-5
+SPATIAL_FACTOR = None
 SPATIAL_SCALE = (1.0, 1.0)
 
 CLUSTER_NUMS = (3, 4, 5, 6, 7, 8)
@@ -33,5 +33,5 @@ for cluster_num in CLUSTER_NUMS:
     res = hca.get_cluster_map(cluster_num).reshape(hca.map_shape)
     plt.imshow(res)
 
-    name = f"cls{cluster_num}_{SPATIAL_FACTOR:.0e}.png"
+    name = f"cls{cluster_num}_{hca.spatial_factor:.2e}.png"
     plt.savefig(DST_PATH + name)

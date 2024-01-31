@@ -32,9 +32,9 @@ class HyperSpectralHCA(MultiDimensionalHCA):
         self.__init_spatial_dist_matrix()
 
         if spatial_dist_factor is None:
-            spatial_dist_factor = self.DEFAULT_SPATIAL_DIST_FACTOR
             print("INFO: spatial_dist_factor is not specified")
-            print("INFO: using default value (1.0)")
+            spatial_dist_factor = self.auto_spatial_factor()
+            print(f"INFO: using auto setting ({spatial_dist_factor:.2e})")
         self.__spt_factor = spatial_dist_factor
 
         self.__update_mixed_dist_matrix()
