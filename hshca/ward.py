@@ -92,10 +92,10 @@ class VarianceWard(LinkageMethod):
         return self.full_distance_vector(multi_clusters, distances)
 
     def __clutster_variance(self, cluster: Cluster) -> float:
-        # TODO: use cache (bind to Cluster?) to improve performance
+        # use cache (bind to Cluster?) to improve performance?
         centroid = np.mean(cluster.member_vectors, axis=0)
         distances = self.metric.distance_matrix(
-            centroid, cluster.member_vectors)  # TODO: support 1-dim array
+            centroid, cluster.member_vectors)
         return np.sum(np.square(distances))
 
 
