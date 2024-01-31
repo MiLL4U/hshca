@@ -12,8 +12,6 @@ DST_PATH = "./dst/"
 
 METHOD = Ward
 METRIC = Euclidean
-SPATIAL_DIST_FACTOR = 0.0003
-SPATIAL_SCALE = (1.0, 1.0, 1.0)
 
 CLUSTER_NUMS = (3, 4, 5, 6, 7, 8)
 
