@@ -13,6 +13,7 @@ from .hca import MultiDimensionalHCA
 class HyperSpectralHCA(MultiDimensionalHCA):
     SPATIAL_METRIC = 'euclidean'
     DEFAULT_SPATIAL_DIST_FACTOR = 1.0
+    AUTO_FACTOR_RATIO = 0.033  # factor = spectral / spatial * ratio
 
     def __init__(self, data: np.ndarray,
                  method: type[LinkageMethod],
@@ -21,20 +22,21 @@ class HyperSpectralHCA(MultiDimensionalHCA):
                  spatial_scale: Optional[Tuple[float, ...]] = None,
                  show_progress: Optional[bool] = None) -> None:
         super().__init__(data, method, spectral_metric, show_progress)
-        if spatial_dist_factor is None:
-            spatial_dist_factor = self.DEFAULT_SPATIAL_DIST_FACTOR
-            print("INFO: spatial_dist_factor is not specified")
-            print("INFO: using default value (1.0)")
+
         if spatial_scale is None:
             spatial_scale = tuple(1.0 for _ in range(data.ndim - 1))
             print("INFO: spatial_scale is not specified")
             print("INFO: using default value:", spatial_scale)
-
-        self.__spt_factor = spatial_dist_factor
         self.__spt_scale = spatial_scale
-
         self.__init_cluster_coordinates()
         self.__init_spatial_dist_matrix()
+
+        if spatial_dist_factor is None:
+            print("INFO: spatial_dist_factor is not specified")
+            spatial_dist_factor = self.auto_spatial_factor()
+            print(f"INFO: using auto setting ({spatial_dist_factor:.2e})")
+        self.__spt_factor = spatial_dist_factor
+
         self.__update_mixed_dist_matrix()
 
     def __init_cluster_coordinates(self) -> None:
@@ -53,11 +55,14 @@ class HyperSpectralHCA(MultiDimensionalHCA):
         res[np.tril_indices(self.data_num)] = np.inf
         self.__spt_dist_matrix = res
 
-    def spatial_centroids(self) -> np.ndarray:
-        res = [np.average(np.array(coords), axis=0)
-               if coords else np.full(len(self.map_shape), np.inf)
-               for coords in self.__cls_coords]
-        return np.array(res)
+    @property
+    def spatial_factor(self) -> float:
+        return self.__spt_factor
+
+    def auto_spatial_factor(self) -> float:
+        res = np.min(self.dist_matrix) / np.min(self.__spt_dist_matrix) \
+            * self.AUTO_FACTOR_RATIO
+        return res
 
     def compute(self) -> None:
         itr = tqdm(range(self.linkage_num)) if self.show_proress_enabled \
@@ -89,12 +94,18 @@ class HyperSpectralHCA(MultiDimensionalHCA):
 
     def __update_spatial_dist_matrix(self) -> None:
         # HACK: decrease update frequency
-        spatial_centroids = self.spatial_centroids()
+        spatial_centroids = self.__spatial_centroids()
         res = distance.cdist(
             spatial_centroids, spatial_centroids, self.SPATIAL_METRIC)
         res[np.tril_indices(self.data_num)] = np.inf
         self.__spt_dist_matrix = res
         self.__spt_dist_matrix[np.isnan(self.__spt_dist_matrix)] = np.inf
+
+    def __spatial_centroids(self) -> np.ndarray:
+        res = [np.average(np.array(coords), axis=0)
+               if coords else np.full(len(self.map_shape), np.inf)
+               for coords in self.__cls_coords]
+        return np.array(res)
 
     def __update_cls_coords(self, linked_pair: Tuple[int, int]) -> None:
         coord_1 = np.average(self.__cls_coords[linked_pair[0]], axis=0)
