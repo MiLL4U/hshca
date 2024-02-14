@@ -4,10 +4,9 @@ import numpy as np
 from scipy.spatial import distance
 from tqdm import tqdm
 
-from hshca.linkmethod import LinkageMethod
-from hshca.metric import HCAMetric
-
 from .hca import MultiDimensionalHCA
+from .linkmethod import LinkageMethod
+from .metric import HCAMetric
 
 
 class HyperSpectralHCA(MultiDimensionalHCA):
