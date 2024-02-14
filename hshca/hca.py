@@ -86,6 +86,9 @@ class HierarchicalClusterAnalysis:
 
         return res
 
+    def get_average_vector(self, cluster_idx: int) -> ndarray:
+        return np.array([])
+
     def search_dist_argmin(self) -> Tuple[int, int]:
         # HACK: optimize search algorhythm
         res = np.unravel_index(
