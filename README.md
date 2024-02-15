@@ -86,7 +86,7 @@ hshca = HyperSpectralHCA(
 hshca.compute()
 ```
 
-### Get result
+### Get results
 ```python
 cluster_map = hshca.get_cluster_map(5)  # number of clusters
 average_spectra = hshca.get_average_vectors(5)
