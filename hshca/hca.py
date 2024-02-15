@@ -86,8 +86,16 @@ class HierarchicalClusterAnalysis:
 
         return res
 
-    def get_average_vector(self, cluster_idx: int) -> ndarray:
-        return np.array([])
+    def get_average_vector(self, cluster_num: int, cluster_idx: int) -> ndarray:
+        fcluster = self.get_fcluster(cluster_num)
+        vectors = self.data[fcluster == cluster_idx]
+        return np.average(vectors, axis=0)
+
+    def get_average_vectors(self, cluster_num: int) -> ndarray:
+        fcluster = self.get_fcluster(cluster_num)
+        arrays = [np.array(self.data[fcluster == cluster_idx])
+                  for cluster_idx in range(cluster_num)]
+        return np.array([np.average(array, axis=0) for array in arrays])
 
     def search_dist_argmin(self) -> Tuple[int, int]:
         # HACK: optimize search algorhythm
