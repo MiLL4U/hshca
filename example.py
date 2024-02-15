@@ -16,7 +16,7 @@ hshca = HyperSpectralHCA(
 )
 hshca.compute()
 
-cluster_map = hshca.get_cluster_map(5)
+cluster_map = hshca.get_cluster_map(5)  # number of clusters
 average_spectra = hshca.get_average_vectors(5)
 
 fig, ax = plt.subplots(1, 2, layout='constrained')
