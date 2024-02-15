@@ -19,3 +19,38 @@ $d_{spatial}$ is defined as the Euclidean distance in real space, which is repre
 $$d_{spatial}(A,B) = \sqrt{(x_A - x_B)^2 + (y_A - y_B)^2}$$
 
 where $(x_A, y_A)$ and $(x_B, y_B)$ are the spatial coordinates of points A and B, respectively.
+
+
+## Installation
+### Install with pip (using Git, recommended)
+Install Hyper Spectral HCA with:
+```bash
+$ python -m pip install git+https://github.com/MiLL4U/hshca.git
+```
+### Install with pip
+1. download a wheel package (*.whl) from [Releases](https://github.com/MiLL4U/hshca/releases)
+
+2. Install Hyper Spectral HCA with pip:
+```bash
+$ python -m pip install hshca-x.y.z-py3-none-any.whl
+```
+(replace x.y.z with the version of HSHCA which you downloaded)
+
+### Install with git clone
+1. Clone this repository
+
+```bash
+$ git clone https://github.com/MiLL4U/hshca.git
+```
+
+2. Go into the repository
+
+```bash
+$ cd hshca
+```
+
+3. Install Hyper Spectral HCA with setup.py
+
+```bash
+$ python setup.py install
+```
