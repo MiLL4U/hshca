@@ -6,6 +6,8 @@ Generally, when applying HCA to hyperspectral images, the numerous spectra compo
 HSHCA efficiently clusters spectra originating from physically adjacent measurement points by using both the distances between spectra ($d_{spectral}$) and the distances in real space between measurement points ($d_{spatial}$) as the definition of distance when performing HCA.
 
 ## Principle
+To see overview of HSHCA, please refer to [this file](doc/theory_of_HSHCA.pdf).
+
 In HSHCA, the distance between cluster A and cluster B ( $d(A,B)$ ) is processed in HCA using the distance between spectra ( $d_{spectral}(A,B)$ ) and the distance in real space ( $d_{spatial}(A,B)$ ) as:
 
 $$d(A,B) = d_{spectral}(A,B) + \lambda\cdot d_{spatial}(A,B)$$
@@ -56,7 +58,7 @@ $ python setup.py install
 ```
 
 ## Usage
-Please refer to [this script](https://github.com/MiLL4U/hshca/blob/master/example.py) for an example of execution (need to install [matplotlib](https://github.com/matplotlib/matplotlib)).
+Please refer to [this script](example.py) for an example of execution (need to install [matplotlib](https://github.com/matplotlib/matplotlib)).
 ### Import HyperSpectralHCA, link method, and metric
 ```python
 from hshca import HyperSpectralHCA
