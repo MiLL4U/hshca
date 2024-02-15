@@ -8,9 +8,7 @@ HSHCA efficiently clusters spectra originating from physically adjacent measurem
 ## Principle
 In HSHCA, the distance between cluster A and cluster B ($d(A,B)$) is processed in HCA using the distance between spectra ($d_{spectral}(A,B)$) and the distance in real space ($d_{spatial}(A,B)$) as:
 
-$
-d(A,B) = d_{spectral}(A,B) + \lambda\cdot d_{spatial}(A,B)
-$
+$d(A,B) = d_{spectral}(A,B) + \lambda\cdot d_{spatial}(A,B)$
 
 Since $d_{spectral}$  and $d_{spatial}$ have different dimensions, $\lambda$ is used as a coefficient to scale these values to the same magnitude. Note that $\lambda$ is a **hyperparameter** that needs to be adjusted according to measurement conditions and other factors.
 
@@ -18,8 +16,6 @@ $d_{spectral}$ is defined by metrics and methods commonly used in traditional HC
 
 $d_{spatial}$ is defined as the Euclidean distance in real space, which is represented by the formula:
 
-$
-d_{spatial}(A,B) = \sqrt{(x_A - x_B)^2 + (y_A - y_B)^2}
-$
+$d_{spatial}(A,B) = \sqrt{(x_A - x_B)^2 + (y_A - y_B)^2}$
 
 where $(x_A, y_A)$ and $(x_B, y_B)$ are the spatial coordinates of points A and B, respectively.
