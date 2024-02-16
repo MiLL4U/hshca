@@ -1,14 +1,14 @@
 # Hyper Spectral HCA
 Hyper Spectral Hierarchical Clustering Analysis (HSHCA) provides [hierarchical clustering analysis (HCA)](https://en.wikipedia.org/wiki/Hierarchical_clustering) specialized for hyperspectral images that can be measured by techniques such as [Raman microscopy](https://raman.oxinst.com/techniques/raman-imaging).
 
-Generally, when applying HCA to hyperspectral images, the numerous spectra composing the image are treated as vectors in independent multidimensional spaces. Therefore, information about spatial coordinates (unit example: μm) at each measurement point of the spectra is lost.
+Generally, when applying HCA to hyperspectral images, the numerous spectra composing the image are treated independently as vectors in multidimensional spaces. Therefore, information about spatial coordinates (example of unit: μm) at each measurement point of the spectra is lost.
 
 HSHCA efficiently clusters spectra originating from physically adjacent measurement points by using both the distances between spectra ($d_{spectral}$) and the distances in real space between measurement points ($d_{spatial}$) as the definition of distance when performing HCA.
 
 ## Principle
-To see overview of HSHCA, please refer to [this file](doc/theory_of_HSHCA.pdf).
+To see an overview of HSHCA, please refer to [this file](doc/theory_of_HSHCA.pdf).
 
-In HSHCA, the distance between cluster A and cluster B ( $d(A,B)$ ) is processed in HCA using the distance between spectra ( $d_{spectral}(A,B)$ ) and the distance in real space ( $d_{spatial}(A,B)$ ) as:
+In HSHCA, the distance between cluster A and cluster B ( $d(A,B)$ ) is processed in HCA using the distance between spectra ( $d_{spectral}(A,B)$ ) and the distance in real space ( $d_{spatial}(A,B)$ ), i.e.:
 
 $$d(A,B) = d_{spectral}(A,B) + \lambda\cdot d_{spatial}(A,B)$$
 
@@ -92,7 +92,7 @@ cluster_map = hshca.get_cluster_map(5)  # number of clusters
 average_spectra = hshca.get_average_vectors(5)
 ```
 
-### show results (using matplotlib)
+### Show results (using matplotlib)
 ```python
 import matplotlib.pyplot as plt
 
