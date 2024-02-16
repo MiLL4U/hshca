@@ -101,7 +101,11 @@ cluster_map = ax[0].imshow(cluster_map, cmap='Paired')
 for cluster_idx, spectra in enumerate(average_spectra):
     ax[1].plot(spectra, label=f"Cluster {cluster_idx}")
 ax[1].legend()
-fig.colorbar(cluster_map, ax=ax[0], orientation='horizontal',  # type: ignore
+fig.colorbar(cluster_map, ax=ax[0], orientation='horizontal',
              label="Cluster index")
 plt.show()
 ```
+
+This script yields:
+
+![Result of example script](doc/exapmle_result.png "Result of example script")
