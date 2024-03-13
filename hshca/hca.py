@@ -166,3 +166,11 @@ class MultiDimensionalHCA(HierarchicalClusterAnalysis):
     def get_cluster_map(self, max_cluster_num: int) -> ndarray:
         fcluster = self.get_fcluster(max_cluster_num)
         return fcluster.reshape(self.map_shape)
+
+    def reorder_clusters(self, spectrum_range: Tuple[int, int]) -> None:
+        """reorder cluster index by integration intensity.
+
+        Args:
+            spectrum_range (Tuple[int, int]): _description_
+        """
+        pass
