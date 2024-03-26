@@ -25,6 +25,7 @@ class HCAMetric(ABC):
         raise NotImplementedError
 
 
+# FIXME: cannot instantiate this class directory
 class SciPySupportedMetric(HCAMetric):
     def __init__(self, metric_name: SciPySupportedMetricsName) -> None:
         self.__name = metric_name
